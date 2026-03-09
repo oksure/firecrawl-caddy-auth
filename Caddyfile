@@ -1,8 +1,4 @@
-{
-    admin off
-}
-
-:{$PORT:3000} {
+:3000 {
 
     # Match only requests that carry the correct Bearer token
     @authorized header Authorization "Bearer {$FIRECRAWL_API_KEY}"
