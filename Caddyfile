@@ -1,0 +1,19 @@
+{
+    admin off
+}
+
+:{$PORT:3000} {
+
+    # Match only requests that carry the correct Bearer token
+    @authorized header Authorization "Bearer {$FIRECRAWL_API_KEY}"
+
+    handle @authorized {
+        reverse_proxy {$FIRECRAWL_UPSTREAM}
+    }
+
+    # Everything else → 401
+    handle {
+        header Content-Type "application/json"
+        respond `{"error": "Unauthorized", "status": 401}` 401
+    }
+}
