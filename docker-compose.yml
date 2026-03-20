@@ -6,16 +6,9 @@ services:
       FIRECRAWL_UPSTREAM: "api:3002"
     expose:
       - "3000"
-    networks:
-      - default
-      - coolify
     depends_on:
       api:
         condition: service_started
-
-networks:
-  coolify:
-    external: true
 
   api:
     image: ghcr.io/firecrawl/firecrawl:latest
