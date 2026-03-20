@@ -29,6 +29,7 @@ services:
       NUM_WORKERS_PER_QUEUE: "${NUM_WORKERS_PER_QUEUE:-8}"
       OPENAI_API_KEY: "${OPENAI_API_KEY}"
       BULL_AUTH_KEY: "${BULL_AUTH_KEY:-@}"
+      NUQ_RABBITMQ_URL: "amqp://rabbitmq:5672"
     expose:
       - "3002"
     depends_on:
@@ -37,6 +38,8 @@ services:
       playwright:
         condition: service_started
       nuq-postgres:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
     ulimits:
       nofile:
@@ -49,6 +52,17 @@ services:
       PORT: "3000"
     expose:
       - "3000"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    expose:
+      - "5672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "check_running"]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
 
   redis:
     image: redis:alpine
