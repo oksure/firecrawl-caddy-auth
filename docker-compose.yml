@@ -1,3 +1,7 @@
+networks:
+  coolify:
+    external: true
+
 services:
   caddy:
     build: .
@@ -15,10 +19,6 @@ services:
     depends_on:
       api:
         condition: service_started
-
-networks:
-  coolify:
-    external: true
 
   api:
     image: ghcr.io/firecrawl/firecrawl:latest
