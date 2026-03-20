@@ -14,8 +14,8 @@ services:
       - default
       - coolify
     labels:
-      - "traefik.http.services.http-0-firecrawl-caddy.loadbalancer.server.port=3000"
-      - "traefik.http.services.https-0-firecrawl-caddy.loadbalancer.server.port=3000"
+      - "traefik.http.services.http-0-sk1yu9lctc2r4wi1xx7vvhu0-caddy.loadbalancer.server.port=3000"
+      - "traefik.http.services.https-0-sk1yu9lctc2r4wi1xx7vvhu0-caddy.loadbalancer.server.port=3000"
     depends_on:
       api:
         condition: service_started
