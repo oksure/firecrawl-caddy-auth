@@ -1,0 +1,69 @@
+services:
+  caddy:
+    build: .
+    environment:
+      FIRECRAWL_API_KEY: ${FIRECRAWL_API_KEY}
+      FIRECRAWL_UPSTREAM: "api:3002"
+    expose:
+      - "3000"
+    depends_on:
+      - api
+
+  api:
+    image: ghcr.io/firecrawl/firecrawl:latest
+    command: node dist/src/harness.js --start-docker
+    environment:
+      HOST: "0.0.0.0"
+      PORT: "3002"
+      REDIS_URL: "redis://redis:6379"
+      REDIS_RATE_LIMIT_URL: "redis://redis:6379"
+      PLAYWRIGHT_MICROSERVICE_URL: "http://playwright:3000/scrape"
+      POSTGRES_HOST: "nuq-postgres"
+      POSTGRES_PORT: "5432"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-postgres}"
+      POSTGRES_DB: "firecrawl"
+      USE_DB_AUTHENTICATION: "false"
+      NUM_WORKERS_PER_QUEUE: "${NUM_WORKERS_PER_QUEUE:-8}"
+      OPENAI_API_KEY: "${OPENAI_API_KEY}"
+      BULL_AUTH_KEY: "${BULL_AUTH_KEY:-@}"
+    expose:
+      - "3002"
+    depends_on:
+      - redis
+      - playwright
+      - nuq-postgres
+    ulimits:
+      nofile:
+        soft: 65535
+        hard: 65535
+
+  playwright:
+    image: ghcr.io/firecrawl/playwright-service:latest
+    environment:
+      PORT: "3000"
+    expose:
+      - "3000"
+
+  redis:
+    image: redis:alpine
+    command: redis-server --bind 0.0.0.0
+    expose:
+      - "6379"
+    volumes:
+      - redis_data:/data
+
+  nuq-postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-postgres}"
+      POSTGRES_DB: "firecrawl"
+    expose:
+      - "5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  redis_data:
+  postgres_data:
