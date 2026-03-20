@@ -24,7 +24,7 @@ services:
       POSTGRES_PORT: "5432"
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-postgres}"
-      POSTGRES_DB: "firecrawl"
+      POSTGRES_DB: "postgres"
       USE_DB_AUTHENTICATION: "false"
       NUM_WORKERS_PER_QUEUE: "${NUM_WORKERS_PER_QUEUE:-8}"
       OPENAI_API_KEY: "${OPENAI_API_KEY}"
@@ -63,7 +63,7 @@ services:
     environment:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-postgres}"
-      POSTGRES_DB: "firecrawl"
+      POSTGRES_DB: "postgres"
     expose:
       - "5432"
     volumes:
