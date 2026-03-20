@@ -7,11 +7,13 @@ services:
     expose:
       - "3000"
     depends_on:
-      - api
+      api:
+        condition: service_started
 
   api:
     image: ghcr.io/firecrawl/firecrawl:latest
     command: node dist/src/harness.js --start-docker
+    restart: on-failure
     environment:
       HOST: "0.0.0.0"
       PORT: "3002"
@@ -30,9 +32,12 @@ services:
     expose:
       - "3002"
     depends_on:
-      - redis
-      - playwright
-      - nuq-postgres
+      redis:
+        condition: service_started
+      playwright:
+        condition: service_started
+      nuq-postgres:
+        condition: service_healthy
     ulimits:
       nofile:
         soft: 65535
@@ -63,6 +68,11 @@ services:
       - "5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
 
 volumes:
   redis_data:
