@@ -59,7 +59,7 @@ services:
       - redis_data:/data
 
   nuq-postgres:
-    image: postgres:16-alpine
+    image: ghcr.io/firecrawl/nuq-postgres:latest
     environment:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-postgres}"
