@@ -6,9 +6,19 @@ services:
       FIRECRAWL_UPSTREAM: "api:3002"
     expose:
       - "3000"
+    networks:
+      - default
+      - coolify
+    labels:
+      - "traefik.http.services.http-0-firecrawl-caddy.loadbalancer.server.port=3000"
+      - "traefik.http.services.https-0-firecrawl-caddy.loadbalancer.server.port=3000"
     depends_on:
       api:
         condition: service_started
+
+networks:
+  coolify:
+    external: true
 
   api:
     image: ghcr.io/firecrawl/firecrawl:latest
